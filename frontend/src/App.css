@@ -1,1 +1,10 @@
+.app {
+    height: 100vh;
+    display: flex;
+}
 
+.content {
+    flex: 1;
+    width: auto;
+    overflow-x: hidden;
+}
