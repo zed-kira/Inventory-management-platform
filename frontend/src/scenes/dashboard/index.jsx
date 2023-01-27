@@ -3,7 +3,6 @@ import {
   BadgeDelta,
   Block,
   ColGrid,
-  DeltaType,
   Flex,
   Metric,
   ProgressBar,
