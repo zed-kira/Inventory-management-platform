@@ -12,10 +12,8 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -27,7 +25,8 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { visuallyHidden } from '@mui/utils';
+import SearchIcon from '@mui/icons-material/Search';
+import { TextInput } from '@tremor/react';
 
 import { useState, useEffect } from "react";
 
@@ -39,7 +38,106 @@ import Service from '../.././components/services';
 import { UpdateProduct } from "../.././components/products";
 import { UpdateService } from "../.././components/services";
 
+// From Tables
+import { EnhancedTableHead } from "../../components/tables";
+import { getComparator } from "../../components/tables";
+import { stableSort } from "../../components/tables";
+
 import './index.css';
+
+EnhancedTableHead.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+};
+
+export function EnhancedTableToolbar(props) {
+    const { onClick, numSelected, headerdata, onNewClick, OnSearch } = props;
+
+    const filters = headerdata.filters;
+  
+    return (
+        <>
+            <Toolbar
+                sx={{
+                pl: { sm: 2 },
+                pr: { xs: 1, sm: 1 },
+                ...(numSelected > 0 && {
+                    bgcolor: (theme) =>
+                    alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+                }),
+                }}
+            >
+                {numSelected > 0 ? (
+                    <Typography
+                        sx={{ flex: '1 1 100%' }}
+                        color="inherit"
+                        variant="subtitle1"
+                        component="div"
+                    >
+                        {numSelected} selected
+                    </Typography>
+                    ) : (
+                    <Typography
+                        sx={{ flex: '1 1 100%' }}
+                        variant="h6"
+                        id="tableTitle"
+                        component="div"
+                    >
+                        {headerdata.general.header}
+                    </Typography>
+                )}
+                <div className="inventory-topbar">
+                    <Dropdown
+                        onValueChange={ (value) => onClick(value) }
+                        placeholder="filter..."
+                    >
+                        { filters.map( filter => {
+                            return (
+                                <DropdownItem
+                                    key={filter.id}
+                                    value={filter.value}
+                                    text={filter.text}
+                                    icon={ undefined }
+                                />
+                            );
+                        } ) }
+                    </Dropdown>
+                </div>
+                <Button onClick={() => onNewClick()} variant="contained" startIcon={<AddIcon />}>
+                    New
+                </Button>
+                {numSelected > 0 ? (
+                    <Tooltip title="Delete">
+                        <IconButton onClick={() => props.OnBulkDelete()}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                    ) : (
+                    <Tooltip title="Filter list">
+                        <IconButton>
+                        <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </Toolbar>
+            <div style={{ padding: 20, background: 'rgb(248, 249, 250)' }}>
+                <TextInput
+                    icon={ SearchIcon }
+                    placeholder="Search..."
+                    onChange={(event) => OnSearch(event)}
+                />
+            </div>
+        </>
+    );
+}
+  
+EnhancedTableToolbar.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+};
 
 export function createProducts(name, sku, cost, price, stock, status, deltaType, value) {
     return {
@@ -139,34 +237,6 @@ export const services = [
     createServices("Pressure Washing", 'jluiudf4', 60, 90, "active", "increase", 2),
 ]; 
 
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
 const productsHeadCells = [
     {
       id: 'name',
@@ -251,137 +321,6 @@ const servicesheadCells = [
       }
 ];
 
-function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } = props;
-    const createSortHandler = (property) => (event) => {
-      onRequestSort(event, property);
-    };
-  
-    return (
-      <TableHead>
-        <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              color="primary"
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-              inputProps={{
-                'aria-label': 'select all desserts',
-              }}
-            />
-          </TableCell>
-          {headCells.map((headCell) => (
-            <TableCell
-              key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
-              padding={headCell.disablePadding ? 'none' : 'normal'}
-              sortDirection={orderBy === headCell.id ? order : false}
-            >
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
-              >
-                {headCell.label}
-                {orderBy === headCell.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-    );
-}
-  
-EnhancedTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
-
-function EnhancedTableToolbar(props) {
-    const { onClick, numSelected, headerdata, onNewClick } = props;
-
-    const filters = headerdata.filters;
-  
-    return (
-      <Toolbar
-        sx={{
-          pl: { sm: 2 },
-          pr: { xs: 1, sm: 1 },
-          ...(numSelected > 0 && {
-            bgcolor: (theme) =>
-              alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-          }),
-        }}
-      >
-        {numSelected > 0 ? (
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-            >
-                {numSelected} selected
-            </Typography>
-            ) : (
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-            >
-                {headerdata.general.header}
-            </Typography>
-        )}
-        <div className="inventory-topbar">
-            <Dropdown
-                onValueChange={ (value) => onClick(value) }
-                placeholder="filter..."
-            >
-                { filters.map( filter => {
-                    return (
-                        <DropdownItem
-                            key={filter.id}
-                            value={filter.value}
-                            text={filter.text}
-                            icon={ undefined }
-                        />
-                    );
-                } ) }
-            </Dropdown>
-        </div>
-        <Button onClick={() => onNewClick()} variant="contained" startIcon={<AddIcon />}>
-            New
-        </Button>
-        {numSelected > 0 ? (
-            <Tooltip title="Delete">
-                <IconButton onClick={() => props.OnBulkDelete()}>
-                    <DeleteIcon />
-                </IconButton>
-            </Tooltip>
-            ) : (
-            <Tooltip title="Filter list">
-                <IconButton>
-                <FilterListIcon />
-                </IconButton>
-            </Tooltip>
-        )}
-      </Toolbar>
-    );
-}
-  
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-};
-
 const Services = (props) => {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
@@ -392,6 +331,12 @@ const Services = (props) => {
 
     //const [ data, setData] = useState(services);
     const { onClick, onUpdate, data, setData } = props;
+
+    const handleSearch = (event) => {
+        const searchTerm = event.target.value;
+        const filteredResults = services.filter(service => service.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        setData( searchTerm === '' ? services : filteredResults);
+    }
 
     const handleDeleteItem = (sku, name) => {
         const new_data = data.slice().filter(object => object.sku !== sku);
@@ -512,6 +457,7 @@ const Services = (props) => {
                             headerdata={serviceFilters}
                             onNewClick={onClick}
                             OnBulkDelete={handleDeleteBulk}
+                            OnSearch={handleSearch}
                         />
                         <TableContainer>
                         <Table
@@ -633,6 +579,12 @@ const Products = (props) => {
     //const [ data, setData] = useState(products);
 
     const { onClick, onUpdate, data, setData } = props;
+
+    const handleSearch = (event) => {
+        const searchTerm = event.target.value;
+        const filteredResults = products.filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        setData( searchTerm === '' ? products : filteredResults);
+    }
 
     const handleDeleteItem = (sku, name) => {
         const new_data = data.slice().filter(object => object.sku !== sku);
@@ -760,6 +712,7 @@ const Products = (props) => {
                             headerdata={productFilters}
                             onNewClick={onClick}
                             OnBulkDelete={handleDeleteBulk}
+                            OnSearch={handleSearch}
                         />
                         <TableContainer>
                         <Table
@@ -927,7 +880,6 @@ const Inventory = (props) => {
                     <>
                         {serviceComponent}
                     </>
-                    
                 ) }
             </main>
         </>

@@ -11,7 +11,6 @@ import Orders from './scenes/sales/orders';
 import Customers from './scenes/sales/customers';
 import Invoices from './scenes/sales/invoices';
 import Reports from './scenes/reports';
-import Settings from './scenes/settings';
 
 /* import Product from './components/products';
 import Service from './components/services'; */
@@ -25,6 +24,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import '@tremor/react/dist/esm/tremor.css';
 
 import { Routes, Route } from "react-router-dom";
+import Calendar from './scenes/calendar';
 
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
               <Route path="/expenses" element={<Expenses />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/integrations" element={<Integrations />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/calendar" element={<Calendar />} />
               {/* <Route path="/product/create" element={<Product />} />
               <Route path="/service/create" element={<Service />} /> */}
           </Routes>

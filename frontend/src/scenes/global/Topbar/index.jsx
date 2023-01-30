@@ -21,6 +21,10 @@ import Logout from '@mui/icons-material/Logout';
 
 import { useProSidebar } from 'react-pro-sidebar';
 
+import userAvatar from "../../../assets/images/customer-2.jpg";
+import user2Avatar from "../../../assets/images/customer-1.jpg";
+import user3Avatar from "../../../assets/images/customer-3.jpg";
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -87,7 +91,7 @@ const AccountMenu = () => {
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}></Avatar>
+              <Avatar alt="Avatar" src={userAvatar} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -127,10 +131,10 @@ const AccountMenu = () => {
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
           <MenuItem onClick={handleClose}>
-            <Avatar /> Profile
+            <Avatar alt="Avatar" src={user2Avatar} /> Second User
           </MenuItem>
           <MenuItem onClick={handleClose}>
-            <Avatar /> My account
+            <Avatar alt="Avatar" src={user3Avatar} /> Third User
           </MenuItem>
           <Divider />
           <MenuItem onClick={handleClose}>
@@ -166,8 +170,8 @@ const Topbar = (props) => {
 
     return (
 
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+      <Box sx={{ flexGrow: 1 }} id="topbar">
+        <AppBar position="static" id="topbar-header">
           <Toolbar>
             <IconButton
               size="large"
@@ -197,7 +201,6 @@ const Topbar = (props) => {
               />
             </Search>
             <AccountMenu />
-            {/* <Avatar sx={{ bgcolor: 'rgb(249, 249, 249, 0.7)' }}></Avatar> */}
           </Toolbar>
         </AppBar>
       </Box>
