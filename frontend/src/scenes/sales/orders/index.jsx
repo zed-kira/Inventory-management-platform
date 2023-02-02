@@ -1,11 +1,9 @@
-import { Button } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import { Badge, Col, ColGrid } from "@tremor/react";
+import { useState } from "react";
 
 // Handling Dates
 import { format } from 'fecha';
 
-import * as React from 'react';
+// MUI Components
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -21,14 +19,20 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
+// Tremor
 import { DateRangePicker } from "@tremor/react";
-
 import { TextInput } from '@tremor/react';
+import { Badge, Col, ColGrid } from "@tremor/react";
+import { Card, Flex, Icon, Block, BadgeDelta, ProgressBar, Text, Metric } from "@tremor/react";
 
-import { useState } from "react";
+// Heroicons
+import { BeakerIcon, CurrencyDollarIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
 
-// Icons
+
+// MUI Icons
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -39,12 +43,13 @@ import { EnhancedTableHead } from "../../../components/tables";
 import { getComparator } from "../../../components/tables";
 import { stableSort } from "../../../components/tables";
 
-function createOrder(id, date, customer, item, amount, status) {
+function createOrder(id, date, customer, item, cost, amount, status) {
     return {
         id,
         date,
         customer,
         item,
+        cost,
         amount,
         status,
     };
@@ -90,17 +95,17 @@ const ordersheadCells = [
 ];
 
 const orders = [
-    createOrder("OR-ergwe234", new Date(2023, 1, 27), 'Anika Visser', 'Cupcake', 34.99, ['cancelled', 'red']),
-    createOrder("OR-dgwqe345", new Date(2023, 1, 28), 'John Smith', 'Donut', 12.99, ['paid', 'green']),
-    createOrder("OR-asdfg456", new Date(2023, 1, 29), 'Emily Johnson', 'Croissant', 5.99, ['pending', 'cyan']),
-    createOrder("OR-zxcvb567", new Date(2023, 1, 30), 'Michael Brown', 'Bagel', 3.99, ['paid', 'green']),
-    createOrder("OR-qwerty678", new Date(2023, 1, 31), 'Jessica Davis', 'Muffin', 2.99, ['cancelled', 'red']),
-    createOrder("OR-uiop789", new Date(2023, 1, 2), 'Ashley Miller', 'Pie', 8.99, ['paid', 'green']),
-    createOrder("OR-rewq890", new Date(2023, 2, 2), 'David Garcia', 'Cake', 15.99, ['pending', 'cyan']),
-    createOrder("OR-tyuio901", new Date(2023, 2, 3), 'Sarah Martinez', 'Brownie', 4.99, ['paid', 'green']),
-    createOrder("OR-asdfg902", new Date(2023, 2, 4), 'Andrew Robinson', 'Cookie', 1.99, ['cancelled', 'red']),
-    createOrder("OR-zxcvb903", new Date(2023, 2, 5), 'Joshua Clark', 'Bread', 2.99, ['paid', 'green']),
-    createOrder("OR-lkrt43", new Date(2023, 2, 27), 'Anika Visser', 'Cupcake', 34.99, ['paid', 'green']),
+    createOrder("OR-ergwe234", new Date(2023, 1, 27), 'Anika Visser', 'Cupcake', 105, 134.99, ['cancelled', 'red']),
+    createOrder("OR-dgwqe345", new Date(2023, 1, 28), 'John Smith', 'Donut', 150, 212.99, ['paid', 'green']),
+    createOrder("OR-asdfg456", new Date(2023, 1, 29), 'Emily Johnson', 'Croissant', 50.50, 55.99, ['pending', 'cyan']),
+    createOrder("OR-zxcvb567", new Date(2023, 1, 30), 'Michael Brown', 'Bagel', 20.20, 23.99, ['paid', 'green']),
+    createOrder("OR-qwerty678", new Date(2023, 1, 31), 'Jessica Davis', 'Muffin', 248.50, 252.99, ['cancelled', 'red']),
+    createOrder("OR-uiop789", new Date(2023, 1, 2), 'Ashley Miller', 'Pie', 22.50, 28.99, ['paid', 'green']),
+    createOrder("OR-rewq890", new Date(2023, 2, 2), 'David Garcia', 'Cake', 50,99, 55.99, ['pending', 'cyan']),
+    createOrder("OR-tyuio901", new Date(2023, 2, 3), 'Sarah Martinez', 'Brownie', 29.40, 55.99, ['paid', 'green']),
+    createOrder("OR-asdfg902", new Date(2023, 2, 4), 'Andrew Robinson', 'Cookie', 15.20, 25.99, ['cancelled', 'red']),
+    createOrder("OR-zxcvb903", new Date(2023, 2, 5), 'Joshua Clark', 'Bread', 30.34, 45.99, ['paid', 'green']),
+    createOrder("OR-lkrt43", new Date(2023, 2, 27), 'Anika Visser', 'Cupcake', 122.25, 166.99, ['paid', 'green']),
 ];
 
 export function EnhancedTableToolbar(props) {
@@ -202,7 +207,7 @@ const Orders = () => {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     //const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const [ data, setData] = useState(orders);
 
@@ -294,11 +299,71 @@ const Orders = () => {
         setPage(0);
     };
 
-
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
+    const sum = (type) => {
+        if(type === 'sales') {
+            let sum = 0;
+            data.forEach(item => {
+                if(item.status[0] === 'paid'){
+                    sum += item.amount;
+                }
+            });
+            return sum;
+        } else if(type === 'profit') {
+            let sum = 0;
+            data.forEach(item => {
+                if(item.status[0] === 'paid'){
+                    let profit = item.amount - item.cost; 
+                    sum += profit;
+                }
+            });
+            return sum;
+        }
+    }
+
+    const insights = [
+        {
+            id: 'wehfwef22',
+            title: 'Sales',
+            metric: sum('sales'),
+            progress: 15.9,
+            delta: '13.2%',
+            icon : CurrencyDollarIcon,
+            color: 'emerald',
+            type: 'currency',
+            deltaType: 'moderateIncrease',
+        },
+        {
+            id: 'dfhw453',
+            title: 'Profit',
+            metric: sum('profit'),
+            progress: 36.5,
+            delta: '23.9%',
+            icon : CurrencyDollarIcon,
+            color: 'emerald',
+            type: 'currency',
+            deltaType: 'increase',
+        },
+        {
+            id: 'rhw344',
+            title: 'Orders',
+            metric: data.length,
+            progress: 53.6,
+            delta: '10.1%',
+            icon: ShoppingCartIcon,
+            color: 'blue',
+            type: 'integer',
+            deltaType: 'moderateDecrease',
+        },
+    ];
+
+    const valueFormatter = (number) => (
+        `$ ${Intl.NumberFormat('en').format(number).toString()}`
+    );
 
     return (
         <>
@@ -308,7 +373,7 @@ const Orders = () => {
                 <div className="container orders-header" style={{ marginTop: 50 }}>
                     <div className="row">
                         <div className="col">
-                            <h1>Orders <span style={{ color: "rgb(59 130 246 / 0.5)"}}>({data.length})</span></h1>
+                            <h1>Orders</h1>
                         </div>
                         <div className="col text-sm-start text-md-end text-lg-end text-xl-end text-xxl-end">
                             <Button 
@@ -323,6 +388,41 @@ const Orders = () => {
                             </Button>
                         </div>
                     </div>
+                </div>
+
+                <div className="container orders-insights" style={{ marginTop: 50 }}>
+                    <ColGrid numColsMd={ 2 } numColsLg={ 3 } marginTop="mt-6" gapX="gap-x-6" gapY="gap-y-6">
+                    { insights.map((item) => (
+                        <Card key={ item.id }>
+                            <Flex alignItems="items-center">
+                                <div style={{ marginRight: 20 }}>
+                                    <Icon
+                                        icon={item.icon}
+                                        color={item.color}
+                                        variant="solid"
+                                        tooltip="Sum of Sales"
+                                        size="lg"
+                                    />
+                                </div>
+                                <Block truncate={ true }>
+                                    <Text>{ item.title }</Text>
+                                    <Metric truncate={ true }>
+                                        {
+                                            item.type === 'currency' ?
+                                            valueFormatter(item.metric)
+                                            : item.metric 
+                                        }
+                                    </Metric>
+                                </Block>
+                                
+                                <BadgeDelta deltaType={ item.deltaType } text={ item.delta } />
+                            </Flex>
+                            {/* <Flex marginTop="mt-4" spaceX="space-x-2">
+                                <Text truncate={ true }>{ `${item.progress}% (${item.metric})` }</Text>
+                            </Flex> */}
+                        </Card>
+                    )) }
+                    </ColGrid>
                 </div>
 
                 <div className='container orders-table' style={{ marginTop: 50 }}>

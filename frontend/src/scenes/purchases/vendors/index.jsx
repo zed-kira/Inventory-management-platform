@@ -35,22 +35,14 @@ import { getComparator } from "../../../components/tables";
 import { stableSort } from "../../../components/tables";
 
 // Tremor
-import { Card, Title, DonutChart, Metric, Flex, Block, BadgeDelta, LineChart } from '@tremor/react';
-import { Legend, Divider, Bold } from "@tremor/react";
-import { Text, Icon } from "@tremor/react";
-import { DateRangePicker } from "@tremor/react";
+import { Card, Title, Metric, Flex, Block, BadgeDelta, LineChart } from '@tremor/react';
+import { Text } from "@tremor/react";
 import { TextInput } from '@tremor/react';
-import { Badge, Col, ColGrid } from "@tremor/react";
-
-// Nivo Charts
-import { ResponsivePie } from '@nivo/pie';
+import { Col, ColGrid, Bold } from "@tremor/react";
 
 
 // Material UI Icons
 import AddIcon from '@mui/icons-material/Add';
-
-// Heroicons
-import { BeakerIcon, PhotoIcon } from '@heroicons/react/24/solid';
 
 // Custom Css
 import './index.css';
@@ -61,7 +53,7 @@ import productImage2 from "../../../assets/images/product-2.png";
 import productImage3 from "../../../assets/images/product-3.png";
 import productImage4 from "../../../assets/images/product-4.png";
 
-const supplies = [
+export const supplies = [
   {
     id: 1,
     image: productImage1,
@@ -120,7 +112,7 @@ const supplies = [
   },
 ];
 
-const payables = [
+export const payables = [
     { date: format(new Date(2022, 11, 1), 'MMMM Do, YYYY'), payables: 1500 },
     { date: format(new Date(2022, 12, 1), 'MMMM Do, YYYY'), payables: 1200 },
     { date: format(new Date(2023, 1, 1), 'MMMM Do, YYYY'), payables: 1700 },
@@ -145,7 +137,7 @@ function createRow(id, contact, company, payables, terms) {
     };
 }
 
-const vendors = [
+export const vendors = [
     createRow("jwi832", "Jane Doe", "Acme Inc.", 1500, "Net 30"),
     createRow("idj999", "John Smith", "XYZ Corp.", 800, "Net 15"),
     createRow("aid111", "Jane Smith", "ABC Enterprises", 1700, "Net 60"),
@@ -423,7 +415,7 @@ const Vendors = () => {
                 </div>
 
 
-                <div className="container expenses-insights" style={{ marginTop: 20 }}>
+                <div className="container vendors-insights" style={{ marginTop: 20 }}>
                     <div className="row">
                         <div className="col-xxl-8 offset-xxl-0">
                             <ColGrid numColsMd={ 2 } numColsLg={ 2 } marginTop="mt-6" gapX="gap-x-6" gapY="gap-y-6">

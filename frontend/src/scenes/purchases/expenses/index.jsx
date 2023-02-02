@@ -35,15 +35,11 @@ import { stableSort } from "../../../components/tables";
 
 // Tremor
 import { Card, Title, DonutChart, Metric, Flex, Block } from '@tremor/react';
-import { Legend, Divider, Bold } from "@tremor/react";
+import { Legend, Bold } from "@tremor/react";
 import { Text, Icon } from "@tremor/react";
 import { DateRangePicker } from "@tremor/react";
 import { TextInput } from '@tremor/react';
-import { Badge, Col, ColGrid } from "@tremor/react";
-
-// Nivo Charts
-import { ResponsivePie } from '@nivo/pie';
-
+import { Col, ColGrid } from "@tremor/react";
 
 // Material UI Icons
 import AddIcon from '@mui/icons-material/Add';
@@ -55,7 +51,7 @@ import { ArrowUpRightIcon, ArrowDownRightIcon } from '@heroicons/react/24/solid'
 import './index.css';
 
 
-const transactions = [
+export const transactions = [
     {
         id: 1,
         name: 'Buy BTC',
@@ -95,7 +91,7 @@ function createExpense(id, date, category, amount, vendor) {
     };
 }
 
-const expenses = [
+export const expenses = [
     createExpense("egj32eosij", new Date(2023, 2, 5), 'Cost Of Goods & Services', 1200, 'Jack Mallen'),
     createExpense("kowfh37gmc", new Date(2023, 1, 20), 'Advertising & Marketing', 500, 'Jane Doe'),
     createExpense("oia837rgbf", new Date(2023, 2, 8), 'Debt', 700, 'John Doe'),
@@ -147,7 +143,7 @@ const expensesheadCells = [
     }
 ];
 
-const valueFormatter = (number) => (
+export const valueFormatter = (number) => (
     `$ ${Intl.NumberFormat('us').format(number).toString()}`
 );
 

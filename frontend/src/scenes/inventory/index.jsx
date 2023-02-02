@@ -703,7 +703,6 @@ const Products = (props) => {
             </div>
 
             <div className="products-list">
-
                 <Box sx={{ width: '100%' }}>
                     <Paper sx={{ width: '100%', mb: 2 }}>
                         <EnhancedTableToolbar 

@@ -1,7 +1,5 @@
-import { Button } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
 
-import * as React from 'react';
+// MUI Components
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -18,12 +16,21 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
-
-import { TextInput } from '@tremor/react';
+import { Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 import { useState } from "react";
 
-// Icons
+// Tremor
+import { DateRangePicker } from "@tremor/react";
+import { TextInput } from '@tremor/react';
+import { Badge, Col, ColGrid } from "@tremor/react";
+import { Card, Flex, Icon, Block, BadgeDelta, ProgressBar, Text, Metric } from "@tremor/react";
+
+// Heroicons
+import { UsersIcon, CurrencyDollarIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
+
+// MUI Icons
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import SearchIcon from '@mui/icons-material/Search';
@@ -106,7 +113,7 @@ const customerheadCells = [
       }
 ];
 
-const customers = [
+export const customers = [
     createCustomer("Carson Darrin", 'carson@gmail.coom', 'rge4535', 'Berkeley, California, USA', 60, 590, 0),
     createCustomer("Fran Perez", 'Fran@gmail.coom', 'er3dger45', 'Carson City, Nevada, USA', 75,  3000, 1),
     createCustomer("Jie Yan Song", 'Jie@gmail.coom', 'gerw453', 'Los Angeles, California, USA', 1890, 200, 2),
@@ -203,7 +210,7 @@ const Customers = () => {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     //const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const [ data, setData] = useState(customers);
 
@@ -284,6 +291,62 @@ const Customers = () => {
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
+    const sum = (type) => {
+        if(type === 'spent') {
+            let sum = 0;
+            data.forEach(item => {
+                sum += item.spent;
+            });
+            return sum;
+        } else if(type === 'orders') {
+            let sum = 0;
+            data.forEach(item => {
+                sum += item.orders;
+            });
+            return sum;
+        }
+    }
+
+    const insights = [
+        {
+            id: 'ew3r',
+            title: 'Total Customers',
+            metric: data.length,
+            progress: 15.9,
+            delta: '13.2%',
+            icon : UsersIcon,
+            color: 'red',
+            type: 'number',
+            deltaType: 'moderateIncrease',
+        },
+        {
+            id: 'gsese',
+            title: 'Total Spent',
+            metric: sum('spent'),
+            progress: 36.5,
+            delta: '23.9%',
+            icon : CurrencyDollarIcon,
+            color: 'emerald',
+            type: 'currency',
+            deltaType: 'increase',
+        },
+        {
+            id: 'hrwf',
+            title: 'Total Orders Placed',
+            metric: sum('orders'),
+            progress: 53.6,
+            delta: '10.1%',
+            icon: ShoppingCartIcon,
+            color: 'blue',
+            type: 'integer',
+            deltaType: 'moderateDecrease',
+        },
+    ];
+
+    const valueFormatter = (number) => (
+        `$ ${Intl.NumberFormat('en').format(number).toString()}`
+    );
+
     return (
 
         <>
@@ -292,7 +355,7 @@ const Customers = () => {
                 <div className="container customers-header" style={{ marginTop: 50 }}>
                     <div className="row">
                     <div className="col">
-                        <h1>Customers <span style={{ color: "rgb(59 130 246 / 0.5)"}}>({data.length})</span></h1>
+                        <h1>Customers</h1>
                         <div>
                             <IconButton
                                 size="small"
@@ -329,6 +392,41 @@ const Customers = () => {
                         </Button>
                     </div>
                     </div>
+                </div>
+
+                <div className="container customers-insights" style={{ marginTop: 50 }}>
+                    <ColGrid numColsMd={ 2 } numColsLg={ 3 } marginTop="mt-6" gapX="gap-x-6" gapY="gap-y-6">
+                    { insights.map((item) => (
+                        <Card key={ item.id }>
+                            <Flex alignItems="items-center">
+                                <div style={{ marginRight: 20 }}>
+                                    <Icon
+                                        icon={item.icon}
+                                        color={item.color}
+                                        variant="solid"
+                                        tooltip="Sum of Sales"
+                                        size="lg"
+                                    />
+                                </div>
+                                <Block truncate={ true }>
+                                    <Text>{ item.title }</Text>
+                                    <Metric truncate={ true }>
+                                        {
+                                            item.type === 'currency' ?
+                                            valueFormatter(item.metric)
+                                            : item.metric 
+                                        }
+                                    </Metric>
+                                </Block>
+                                
+                                <BadgeDelta deltaType={ item.deltaType } text={ item.delta } />
+                            </Flex>
+                            {/* <Flex marginTop="mt-4" spaceX="space-x-2">
+                                <Text truncate={ true }>{ `${item.progress}% (${item.metric})` }</Text>
+                            </Flex> */}
+                        </Card>
+                    )) }
+                    </ColGrid>
                 </div>
 
                 <div className='container customers-table' style={{ marginTop: 50 }}>

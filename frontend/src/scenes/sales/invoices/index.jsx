@@ -1,12 +1,22 @@
-import { Button } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import { Badge, Col, ColGrid } from "@tremor/react";
+// React
+import { useState } from "react";
+import PropTypes from 'prop-types';
 
 // Handling Dates
 import { format } from 'fecha';
 
-import * as React from 'react';
-import PropTypes from 'prop-types';
+// Tremor
+import { DateRangePicker } from "@tremor/react";
+import { TextInput } from '@tremor/react';
+import { Badge, Col, ColGrid } from "@tremor/react";
+import { Card, Flex, Icon, Block, BadgeDelta, Text, Metric } from "@tremor/react";
+
+// Heroicons
+import { DocumentTextIcon, CurrencyDollarIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
+
+// MUI Components
+import { Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -22,13 +32,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
-import { DateRangePicker } from "@tremor/react";
-
-import { TextInput } from '@tremor/react';
-
-import { useState } from "react";
-
-// Icons
+// MUI Icons
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -89,7 +93,7 @@ const invoicesheadCells = [
     }
 ];
 
-const invoices = [
+export const invoices = [
     createInvoice("0001", new Date(2023, 1, 27), 'Anika Visser', 349.99, ['paid', 'green']),
     createInvoice("0002", new Date(2023, 2, 14), 'John Doe', 199.99, ['sent', 'blue']),
     createInvoice("0003", new Date(2023, 3, 2), 'Jane Smith', 449.99, ['paid', 'green']),
@@ -211,7 +215,7 @@ const Invoices = () => {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     //const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const [ data, setData] = useState(invoices);
 
@@ -310,15 +314,81 @@ const Invoices = () => {
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
+    const sum = (type) => {
+        if(type === 'amount') {
+            let sum = 0;
+            data.forEach(item => {
+                if(item.status[0] === 'paid'){
+                    sum += item.amount;
+                }
+            });
+            return sum;
+        } else if(type === 'average') {
+            let amounts = [];
+            let sum = 0;
+            data.forEach(item => {
+                if(item.status[0] === 'paid'){ 
+                    amounts.push(item.amount);
+                    sum += item.amount;
+                }
+            });
+            
+            let average = sum / amounts.length;
+            let roundedNumber = average.toFixed(2);
+
+            return roundedNumber;
+        }
+    }
+
+    const insights = [
+        {
+            id: 'kje',
+            title: 'Total Invoices',
+            metric: data.length,
+            progress: 15.9,
+            delta: '13.2%',
+            icon : DocumentTextIcon,
+            color: 'cyan',
+            type: 'number',
+            deltaType: 'moderateIncrease',
+        },
+        {
+            id: 'ajser3',
+            title: 'Total Amount',
+            metric: sum('amount'),
+            progress: 36.5,
+            delta: '23.9%',
+            icon : CurrencyDollarIcon,
+            color: 'emerald',
+            type: 'currency',
+            deltaType: 'increase',
+        },
+        {
+            id: 'jser4',
+            title: 'Average Invoice Amount',
+            metric: sum('average'),
+            progress: 53.6,
+            delta: '10.1%',
+            icon: ShoppingCartIcon,
+            color: 'blue',
+            type: 'currency',
+            deltaType: 'moderateDecrease',
+        },
+    ];
+
+    const valueFormatter = (number) => (
+        `$ ${Intl.NumberFormat('en').format(number).toString()}`
+    );
+
     return (
         <>
         
             <section>
                     
-                <div className="container orders-header" style={{ marginTop: 50 }}>
+                <div className="container invoices-header" style={{ marginTop: 50 }}>
                     <div className="row">
                         <div className="col">
-                            <h1>Invoices <span style={{ color: "rgb(59 130 246 / 0.5)"}}>({data.length})</span></h1>
+                            <h1>Invoices</h1>
                         </div>
                         <div className="col text-sm-start text-md-end text-lg-end text-xl-end text-xxl-end">
                             <Button 
@@ -335,7 +405,42 @@ const Invoices = () => {
                     </div>
                 </div>
 
-                <div className='container orders-table' style={{ marginTop: 50 }}>
+                <div className="container invoices-insights" style={{ marginTop: 50 }}>
+                    <ColGrid numColsMd={ 2 } numColsLg={ 3 } marginTop="mt-6" gapX="gap-x-6" gapY="gap-y-6">
+                    { insights.map((item) => (
+                        <Card key={ item.id }>
+                            <Flex alignItems="items-center">
+                                <div style={{ marginRight: 20 }}>
+                                    <Icon
+                                        icon={item.icon}
+                                        color={item.color}
+                                        variant="solid"
+                                        tooltip="Sum of Sales"
+                                        size="lg"
+                                    />
+                                </div>
+                                <Block truncate={ true }>
+                                    <Text>{ item.title }</Text>
+                                    <Metric truncate={ true }>
+                                        {
+                                            item.type === 'currency' ?
+                                            valueFormatter(item.metric)
+                                            : item.metric 
+                                        }
+                                    </Metric>
+                                </Block>
+                                
+                                <BadgeDelta deltaType={ item.deltaType } text={ item.delta } />
+                            </Flex>
+                            {/* <Flex marginTop="mt-4" spaceX="space-x-2">
+                                <Text truncate={ true }>{ `${item.progress}% (${item.metric})` }</Text>
+                            </Flex> */}
+                        </Card>
+                    )) }
+                    </ColGrid>
+                </div>
+
+                <div className='container invoices-table' style={{ marginTop: 50 }}>
                     <Box sx={{ width: '100%' }}>
                         <Paper sx={{ width: '100%', mb: 2 }}>
                             <EnhancedTableToolbar  
