@@ -1,2 +1,2 @@
 # Inventory-management-platform
-An Inventory Management web application built using React and Django Rest Framework.
+A dynamic and interactive Inventory Management web application built using React and Django Rest Framework.
