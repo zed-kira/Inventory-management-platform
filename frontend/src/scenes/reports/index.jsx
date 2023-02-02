@@ -586,7 +586,7 @@ const Reports = () => {
                     </div>
                 </div>
 
-                <div className="container report-accordions" style={{ marginTop: 50 }}>
+                <div className="container report-accordions" style={{ marginTop: 50, marginBottom: 50 }}>
                     <div className="row">
                         <Space direction="vertical">
                             {data.map(item => {

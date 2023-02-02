@@ -12,6 +12,8 @@ import Customers from './scenes/sales/customers';
 import Invoices from './scenes/sales/invoices';
 import Reports from './scenes/reports';
 
+import ZedFooter from './components/footer/ZedFooter';
+
 /* import Product from './components/products';
 import Service from './components/services'; */
 
@@ -26,8 +28,16 @@ import '@tremor/react/dist/esm/tremor.css';
 import { Routes, Route } from "react-router-dom";
 import Calendar from './scenes/calendar';
 
+import { useProSidebar } from 'react-pro-sidebar';
+
 
 function App() {
+
+  const { collapseSidebar, toggleSidebar, collapsed, broken, toggled } = useProSidebar();
+
+  const handleSidebar = () => {
+      broken ? toggleSidebar() : collapseSidebar();
+  }
 
   return (
     <>
@@ -35,7 +45,7 @@ function App() {
       <div className='app'>
         <ProSidebar />
         <div className='content'>
-          <Topbar />
+          <Topbar collapse={handleSidebar} />
           <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/inventory" element={<Inventory products={products} services={services} />} />
@@ -50,6 +60,7 @@ function App() {
               {/* <Route path="/product/create" element={<Product />} />
               <Route path="/service/create" element={<Service />} /> */}
           </Routes>
+          <ZedFooter />
         </div>
       </div>
     </>

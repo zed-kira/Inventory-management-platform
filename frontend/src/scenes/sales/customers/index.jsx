@@ -203,7 +203,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-const Customers = () => {
+const Customers = (props) => {
 
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');

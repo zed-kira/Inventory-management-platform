@@ -28,7 +28,7 @@ const ProSidebar = () => {
     
     return (
         
-        <Sidebar id="sidebar" transitionDuration={1000}> {/* backgroundColor="#0C2D48" style={{ height: "100vh" }} */} 
+        <Sidebar breakPoint="sm" id="sidebar" transitionDuration={1000}> {/* backgroundColor="#0C2D48" style={{ height: "100vh" }} */} 
             <Menu>
                 <Menu style={{ marginTop: 10, marginLeft: 5}}>
                     <MenuItem id="logoMenuItem" icon={<img src={logo} id="sidebar_logo" alt='LOGO' />}><h4 style={{ marginLeft: 10, marginTop: 7}}>Zedkira</h4> </MenuItem> {/* <AppleIcon /> style={{ textAlign: "center" }} */}

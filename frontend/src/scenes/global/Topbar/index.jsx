@@ -164,7 +164,7 @@ const AccountMenu = () => {
 
 const Topbar = (props) => {
 
-    const { collapseSidebar } = useProSidebar();
+    const { collapse } = props;
 
     //const { toggleSidebar } = useProSidebar();
 
@@ -179,7 +179,7 @@ const Topbar = (props) => {
               color="inherit"
               aria-label="open drawer"
               sx={{ mr: 2 }}
-              onClick={() => collapseSidebar()}
+              onClick={() => collapse()}
             >
               <MenuIcon />
             </IconButton>

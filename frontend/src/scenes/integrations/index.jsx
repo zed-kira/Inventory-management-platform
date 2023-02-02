@@ -52,7 +52,7 @@ const Integrations = () => {
                     </div>
                 </div>
 
-                <div className="container integrations-api-key" style={{ marginTop: 50}}>
+                <div className="container integrations-api-key" style={{ marginTop: 50, marginBottom: '50vh' }}>
                     <div className="row">
                     <Card title="API KEY">
                         <ColGrid numCols={1} numColsSm={2} numColsLg={3} gapX="gap-x-2" gapY="gap-y-2">
