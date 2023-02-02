@@ -18,8 +18,6 @@ import { Link } from 'react-router-dom';
 import logo from '../../../assets/images/logo.png';
 import '../Sidebar/index.css';
 
-import { Divider } from "@mui/material";
-
 import Avatar from '@mui/material/Avatar';
 import userAvatar from "../../../assets/images/customer-2.jpg";
 

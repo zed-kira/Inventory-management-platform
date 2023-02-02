@@ -23,7 +23,7 @@ import { LineChart } from "@tremor/react";
 import { UsersIcon, DocumentTextIcon, CurrencyDollarIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
 
 import { expenses, valueFormatter, transactions } from "../purchases/expenses";
-import { vendors, payables, supplies } from "../purchases/vendors";
+import { vendors, payables } from "../purchases/vendors";
 import { customers } from "../sales/customers";
 import { invoices } from "../sales/invoices";
 

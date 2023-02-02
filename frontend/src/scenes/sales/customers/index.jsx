@@ -22,10 +22,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState } from "react";
 
 // Tremor
-import { DateRangePicker } from "@tremor/react";
 import { TextInput } from '@tremor/react';
-import { Badge, Col, ColGrid } from "@tremor/react";
-import { Card, Flex, Icon, Block, BadgeDelta, ProgressBar, Text, Metric } from "@tremor/react";
+import { ColGrid } from "@tremor/react";
+import { Card, Flex, Icon, Block, BadgeDelta, Text, Metric } from "@tremor/react";
 
 // Heroicons
 import { UsersIcon, CurrencyDollarIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'

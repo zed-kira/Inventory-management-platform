@@ -18,7 +18,7 @@ import { ArrowUpRightIcon, ArrowDownRightIcon } from '@heroicons/react/24/solid'
 import './index.css';
 
 // tremor
-import { ColGrid, Card, DonutChart, Flex, Icon, Text, Metric, Title, Bold, Footer } from "@tremor/react";
+import { ColGrid, Card, DonutChart, Flex, Icon, Text, Metric, Title, Bold } from "@tremor/react";
 import { Block, BadgeDelta } from "@tremor/react";
 import { Legend } from "@tremor/react";
 

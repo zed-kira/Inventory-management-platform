@@ -1,4 +1,4 @@
-import { Footer, Flex } from "@tremor/react";
+
 
 const ZedFooter = () => {
     return (

@@ -19,8 +19,6 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 
-import { useProSidebar } from 'react-pro-sidebar';
-
 import userAvatar from "../../../assets/images/customer-2.jpg";
 import user2Avatar from "../../../assets/images/customer-1.jpg";
 import user3Avatar from "../../../assets/images/customer-3.jpg";

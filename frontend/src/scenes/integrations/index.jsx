@@ -1,5 +1,3 @@
-// React
-
 // Ant Design 
 import { Card } from 'antd';
 import { Button, message } from 'antd';
