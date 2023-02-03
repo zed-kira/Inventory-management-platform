@@ -5,7 +5,7 @@ A dynamic and interactive Inventory Management web application built using React
 # Live Preview 
 
 <ul>
-  <li><a href="https://zedkira-inventory.vercel.app/">Inventory Management Platform</a>
+  <li><a href="https://zedkira-inventory.vercel.app/">Frontend Demo</a>
 </ul>
 
 
