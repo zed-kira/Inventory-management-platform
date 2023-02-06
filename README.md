@@ -11,7 +11,7 @@ A dynamic and interactive Inventory Management web application built using React
 
 # Screenshot
 
-![Alt text](https://github.com/zed-kira/Inventory-management-platform/blob/main/images/zedkira-inventory.JPG)
+![Demo Screenshot](https://github.com/zed-kira/Inventory-management-platform/blob/main/images/zedkira-inventory.JPG)
 
 
 # Installation
